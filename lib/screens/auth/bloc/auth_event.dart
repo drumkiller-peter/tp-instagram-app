@@ -6,4 +6,6 @@ class AuthSignUpRequested extends AuthEvent {}
 
 class AuthSignUpWithPhoneNumberRequested extends AuthEvent {}
 
+class AuthSendOTPRequested extends AuthEvent {}
+
 class AuthLoginRequested extends AuthEvent {}

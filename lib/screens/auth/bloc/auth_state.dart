@@ -8,9 +8,9 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {
-  String email;
+  String successMessage;
   AuthSuccess({
-    required this.email,
+    required this.successMessage,
   });
 }
 
@@ -19,3 +19,7 @@ class AuthFailure extends AuthState {
 
   AuthFailure({required this.error});
 }
+
+class AuthOtpSend extends AuthState {}
+
+class AuthOtpConfirm extends AuthState {}

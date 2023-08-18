@@ -48,6 +48,49 @@ class SignUpWithPhoneScreen extends StatelessWidget {
                 height: 32,
               ),
               BlocBuilder<AuthBloc, AuthState>(
+                buildWhen: (previous, current) => current is AuthOtpSend,
+                builder: (context, state) {
+                  return state is AuthOtpSend
+                      ? TextFormField(
+                          controller: context.read<AuthBloc>().otpController,
+                          decoration: const InputDecoration(
+                            labelText: "OTP",
+                          ),
+                        )
+                      : const SizedBox();
+                },
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              BlocBuilder<AuthBloc, AuthState>(
+                // buildWhen: (previous, current) =>
+                //     current is AuthLoading ||
+                //     current is AuthInitial ||
+                //     current is AuthSuccess,
+                builder: (context, state) {
+                  return state is AuthOtpSend
+                      ? const SizedBox()
+                      : SizedBox(
+                          width: double.infinity,
+                          height: 72,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              context
+                                  .read<AuthBloc>()
+                                  .add(AuthSignUpWithPhoneNumberRequested());
+                            },
+                            child: state is AuthLoading
+                                ? const CircularProgressIndicator()
+                                : const Text("sign up"),
+                          ),
+                        );
+                },
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              BlocBuilder<AuthBloc, AuthState>(
                 // buildWhen: (previous, current) =>
                 //     current is AuthLoading ||
                 //     current is AuthInitial ||
@@ -64,7 +107,7 @@ class SignUpWithPhoneScreen extends StatelessWidget {
                       },
                       child: state is AuthLoading
                           ? const CircularProgressIndicator()
-                          : const Text("sign up"),
+                          : const Text("verify OTP"),
                     ),
                   );
                 },

@@ -23,7 +23,7 @@ class LoginScreen extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => HomeScreen(
-                email: state.email,
+                email: state.successMessage,
               ),
             ),
           );
