@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tp_instagram_app/firebase_options.dart';
 import 'package:tp_instagram_app/screens/auth/bloc/auth_bloc.dart';
-import 'package:tp_instagram_app/screens/auth/signup/sign_up_with_phone.dart';
+import 'package:tp_instagram_app/screens/home/bloc/home_bloc.dart';
+import 'package:tp_instagram_app/screens/home/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,8 +22,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AuthBloc(),
+        ),
+        BlocProvider(
+          create: (context) => HomeBloc()..add(HomeDataFetchRequested()),
+        ),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -30,7 +38,9 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-        home: const SignUpWithPhoneScreen(),
+        home: const HomeScreen(
+          email: "peter@webpoint.io",
+        ),
       ),
     );
   }
