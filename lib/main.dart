@@ -3,16 +3,32 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tp_instagram_app/configs/routes/app_routes.dart';
+import 'package:tp_instagram_app/configs/routes/navigator_service.dart';
+import 'package:tp_instagram_app/fcm_helper/fcm_helper.dart';
 import 'package:tp_instagram_app/firebase_options.dart';
 import 'package:tp_instagram_app/screens/animation_screen/animation_screen.dart';
 import 'package:tp_instagram_app/screens/auth/bloc/auth_bloc.dart';
 import 'package:tp_instagram_app/screens/home/bloc/home_bloc.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // navigate here.
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseNotificationHelper().init();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
 }
 
@@ -33,6 +49,8 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
+        onGenerateRoute: AppRoutes.onGenerateRoute,
+        navigatorKey: NavigatorService().navigatorKey,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
