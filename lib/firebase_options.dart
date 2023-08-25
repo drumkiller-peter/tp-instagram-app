@@ -50,6 +50,7 @@ class DefaultFirebaseOptions {
     projectId: 'training-point-app',
     authDomain: 'training-point-app.firebaseapp.com',
     storageBucket: 'training-point-app.appspot.com',
+    measurementId: 'G-5K904E2L5N',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
