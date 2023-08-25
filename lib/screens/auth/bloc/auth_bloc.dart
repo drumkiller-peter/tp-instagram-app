@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tp_instagram_app/database/local_database.dart';
+import 'package:tp_instagram_app/repository/database/local_database.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -13,6 +13,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignUpRequested>(_signUp);
     on<AuthSignUpWithPhoneNumberRequested>(_signUpWithPhoneNumber);
     on<AuthLoginRequested>(_login);
+    on<AuthSendOTPRequested>(_verifyOTP);
+  }
+
+  Future<void> _verifyOTP(AuthSendOTPRequested event, Emitter emit) async {
+    emit(AuthLoading());
+    try {
+      if (result != null) {
+        final userCredential = await result!.confirm(otpController.text);
+        await saveUserData(userCredential);
+        emit(AuthSuccess(
+          successMessage: userCredential.user?.email ?? '',
+        ));
+      }
+    } catch (e) {
+      emit(AuthFailure(error: "Couldnot verify otp. $e"));
+    }
   }
 
   Future<void> _login(AuthLoginRequested event, Emitter emit) async {
@@ -26,7 +42,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         id: response.user?.uid ?? '',
       );
       emit(AuthSuccess(
-        email: response.user?.email ?? '',
+        successMessage: response.user?.email ?? '',
       ));
     }
   }
@@ -35,15 +51,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthSignUpWithPhoneNumberRequested event, Emitter emit) async {
     emit(AuthLoading());
     try {
-      ConfirmationResult response =
-          await _firebaseAuth.signInWithPhoneNumber('+9779862429737');
+      //  result = await _firebaseAuth.signInWithPhoneNumber(phoneController.text);
+      await Future.delayed(const Duration(seconds: 2));
 
-      log(response.toString());
-
-      // await saveUserData(response.);
-      emit(AuthSuccess(
-        email: '',
-      ));
+      emit(AuthOtpSend());
     } catch (e) {
       emit(
         AuthFailure(error: "Sign up failed $e"),
@@ -62,7 +73,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       await saveUserData(response);
       emit(AuthSuccess(
-        email: response.user?.email ?? '',
+        successMessage: response.user?.email ?? '',
       ));
     } catch (e) {
       emit(
@@ -76,6 +87,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController otpController = TextEditingController();
+
+  ConfirmationResult? result;
+
   final AppSharedPreference _sharedPreference = AppSharedPreference();
 
   Future<void> saveUserData(UserCredential userCredentials) async {
