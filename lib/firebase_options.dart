@@ -50,6 +50,7 @@ class DefaultFirebaseOptions {
     projectId: 'training-point-app',
     authDomain: 'training-point-app.firebaseapp.com',
     storageBucket: 'training-point-app.appspot.com',
+    measurementId: 'G-5K904E2L5N',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
@@ -66,6 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '874203735024',
     projectId: 'training-point-app',
     storageBucket: 'training-point-app.appspot.com',
+    androidClientId: '874203735024-l1gn9a7nu3hf01j7hvt6d56gsoh7k1g3.apps.googleusercontent.com',
     iosClientId: '874203735024-md0m9382eeqkp6bj55sr7b0rjmm7g2vm.apps.googleusercontent.com',
     iosBundleId: 'com.example.tpInstagramApp',
   );
@@ -76,6 +78,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '874203735024',
     projectId: 'training-point-app',
     storageBucket: 'training-point-app.appspot.com',
+    androidClientId: '874203735024-l1gn9a7nu3hf01j7hvt6d56gsoh7k1g3.apps.googleusercontent.com',
     iosClientId: '874203735024-kq1ild6lv6chukrk6bpo5068gedj529q.apps.googleusercontent.com',
     iosBundleId: 'com.example.tpInstagramApp.RunnerTests',
   );
