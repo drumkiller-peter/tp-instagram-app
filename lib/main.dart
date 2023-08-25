@@ -6,9 +6,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tp_instagram_app/firebase_options.dart';
+import 'package:tp_instagram_app/screens/animation_screen/animation_screen.dart';
 import 'package:tp_instagram_app/screens/auth/bloc/auth_bloc.dart';
 import 'package:tp_instagram_app/screens/home/bloc/home_bloc.dart';
-import 'package:tp_instagram_app/screens/home/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,9 +38,10 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-        home: const HomeScreen(
-          email: "peter@webpoint.io",
-        ),
+        // home: const HomeScreen(
+        //   email: "peter@webpoint.io",
+        // ),
+        home: const AnimationScreen(),
       ),
     );
   }
