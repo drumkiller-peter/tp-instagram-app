@@ -11,7 +11,7 @@ class FirebaseNotificationHelper {
 
   StreamSubscription? subscription;
 
-  init() async {
+  Future<void> init() async {
     await _requestPermission();
     subscription = FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
@@ -35,7 +35,7 @@ class FirebaseNotificationHelper {
     });
   }
 
-  _requestPermission() async {
+  Future<void> _requestPermission() async {
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
@@ -45,5 +45,9 @@ class FirebaseNotificationHelper {
       provisional: false,
       sound: true,
     );
+  }
+
+  Future<void> dispose() async {
+    await subscription?.cancel();
   }
 }

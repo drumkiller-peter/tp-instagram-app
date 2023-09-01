@@ -5,14 +5,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:tp_instagram_app/firebase_options.dart';
-import 'package:tp_instagram_app/screens/animation_screen/animation_screen.dart';
 import 'package:tp_instagram_app/screens/auth/bloc/auth_bloc.dart';
 import 'package:tp_instagram_app/screens/home/bloc/home_bloc.dart';
+import 'package:tp_instagram_app/screens/localization_example/bloc/l10n_bloc.dart';
+import 'package:tp_instagram_app/screens/localization_example/localization_example.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // await FirebaseNotificationHelper().init();
+
   runApp(const MyApp());
 }
 
@@ -30,18 +35,40 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => HomeBloc()..add(HomeDataFetchRequested()),
         ),
-      ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
+        BlocProvider(
+          create: (context) => L10nBloc(),
         ),
-        // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-        // home: const HomeScreen(
-        //   email: "peter@webpoint.io",
-        // ),
-        home: const AnimationScreen(),
+      ],
+      child: BlocBuilder<L10nBloc, L10nState>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'Flutter Demo',
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+
+            supportedLocales: const [
+              Locale('en'),
+              Locale('ne'),
+            ],
+            locale: state is L10nLocalChanged
+                ? Locale(state.countryCode)
+                : const Locale('en'),
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              useMaterial3: true,
+            ),
+            // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+            // home: const HomeScreen(
+            //   email: "peter@webpoint.io",
+            // ),
+            home: const LocalizationExample(),
+            // home: const AnimationScreen(),
+          );
+        },
       ),
     );
   }
