@@ -2,7 +2,12 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:drift/drift.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:tp_instagram_app/config/app_serializer.dart';
+import 'package:tp_instagram_app/config/di_setup.dart';
+import 'package:tp_instagram_app/data/database/app_database.dart';
+import 'package:tp_instagram_app/data/database/home/home_dao.dart';
 import 'package:tp_instagram_app/models/post/post_model.dart';
 
 abstract class PostRepository {
@@ -16,20 +21,40 @@ abstract class PostRepository {
 class PostRepositoryImpl implements PostRepository {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  final HomeDao _homeDao = HomeDao(getIt.get<MyDatabase>());
   @override
   Future<List<PostModel>> fetchPosts() async {
     try {
       var response = await _firebaseFirestore.collection("post").get().then(
-            (value) => value.docs
-                .map(
-                  (e) => PostModel.fromJson(
-                    e.data(),
-                  ),
-                )
-                .toList(),
+            (value) => value.docs.map((e) {
+              log(e.data().toString());
+              return PostModel.fromJson(
+                e.data(),
+              );
+            }).toList(),
           );
 
-      return response;
+      for (var element in response) {
+        await _homeDao.setHomeData(
+          HomeCompanion(
+            id: Value(element.id),
+            title: Value(element.title),
+            description: Value(element.description),
+            // date: Value(
+            //   AppSerializer.timeStampToDateTime(
+            //     Timestamp.fromMillisecondsSinceEpoch(
+            //         element.date?.millisecondsSinceEpoch ?? 0),
+            //   ),
+            // ),
+            likeCount: Value(element.likeCount),
+            imagePath: Value(element.imagePath),
+          ),
+        );
+      }
+
+      final homeData = await _homeDao.getHomeData();
+
+      return homeData;
     } catch (e) {
       log(e.toString());
       rethrow;
@@ -39,7 +64,7 @@ class PostRepositoryImpl implements PostRepository {
   @override
   Future<void> addPosts(PostModel postModel) async {
     try {
-      log("Here i am");
+      log("Here i am $postModel");
       var postCollection = _firebaseFirestore.collection("post");
 
       await postCollection.doc(postModel.id.toString()).set(postModel.toJson());

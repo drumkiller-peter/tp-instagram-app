@@ -25,7 +25,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           PostModel postModel = PostModel(
             title: "This is my title ${DateTime.now().millisecondsSinceEpoch}",
             description: "This is description",
-            date: DateTime.now(),
+            // date: DateTime.now(),
             isLiked: false,
             likeCount: 17,
             id: DateTime.now().millisecondsSinceEpoch,
@@ -44,11 +44,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     });
 
     on<HomeDataFetchRequested>((event, emit) async {
-      emit(HomeLoading());
-      var response = await postRepository.fetchPosts();
-      emit(
-        HomeLoaded(posts: response),
-      );
+      try {
+        emit(HomeLoading());
+        var response = await postRepository.fetchPosts();
+
+        emit(
+          HomeLoaded(posts: response),
+        );
+      } catch (e) {
+        log(e.toString());
+        emit(
+          HomeFailure(error: e.toString()),
+        );
+      }
     });
 
     on<HomeLikeEditRequested>((event, emit) async {

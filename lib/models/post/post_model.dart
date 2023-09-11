@@ -1,43 +1,37 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-class PostModel {
-  int? id;
-  String? title;
-  String? description;
-  DateTime? date;
-  int? likeCount;
-  bool? isLiked;
-  String? imagePath;
+part 'post_model.g.dart';
 
-  PostModel({
+@JsonSerializable()
+class PostModel extends Equatable {
+  final int? id;
+  final String? title;
+  final String? description;
+
+  // @JsonKey(name: "date", fromJson: AppSerializer.timeStampToDateTime)
+  // final DateTime? date;
+
+  final int? likeCount;
+  final bool? isLiked;
+  final String? imagePath;
+
+  const PostModel({
     required this.id,
     required this.title,
     required this.description,
-    required this.date,
+    // required this.date,
     required this.isLiked,
     required this.likeCount,
     required this.imagePath,
   });
 
-  PostModel.fromJson(Map<String, dynamic> json) {
-    title = json['title'];
-    description = json['description'];
-    date = (json['date'] as Timestamp).toDate();
-    likeCount = json['likeCount'];
-    isLiked = json['isLiked'];
-    id = json['id'];
-    imagePath = json['imagePath'];
-  }
+  factory PostModel.fromJson(Map<String, dynamic> json) =>
+      _$PostModelFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['title'] = title;
-    data['description'] = description;
-    data['date'] = date;
-    data['likeCount'] = likeCount;
-    data['isLiked'] = isLiked;
-    data['id'] = id;
-    data['imagePath'] = imagePath;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$PostModelToJson(this);
+
+  @override
+  List<Object?> get props =>
+      [id, title, description, likeCount, isLiked, imagePath];
 }

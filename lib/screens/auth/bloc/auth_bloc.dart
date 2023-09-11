@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tp_instagram_app/repository/database/local_database.dart';
+import 'package:tp_instagram_app/data/shared_preference/app_shared_preference.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

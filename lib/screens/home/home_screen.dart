@@ -1,15 +1,14 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tp_instagram_app/screens/error_builder/error_screen.dart';
 import 'package:tp_instagram_app/screens/home/bloc/home_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
     Key? key,
-    required this.email,
   }) : super(key: key);
-
-  final String email;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class HomeScreen extends StatelessWidget {
           if (state is HomeLoaded) {
             return Column(
               children: [
-                Text("Welcome $email"),
+                const Text("Welcome Peter"),
                 Expanded(
                   child: ListView.builder(
                       itemCount: state.posts.length,
@@ -56,8 +55,9 @@ class HomeScreen extends StatelessWidget {
                                   },
                                   child: const Icon(Icons.favorite),
                                 ),
-                                Image.network(state.posts[index].imagePath ??
-                                    "https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?cs=srgb&dl=pexels-mike-bird-3729464.jpg&fm=jpg"),
+                                CachedNetworkImage(
+                                    imageUrl: state.posts[index].imagePath ??
+                                        "https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?cs=srgb&dl=pexels-mike-bird-3729464.jpg&fm=jpg"),
                               ],
                             ),
                           ),
@@ -66,6 +66,9 @@ class HomeScreen extends StatelessWidget {
                 )
               ],
             );
+          } else if (state is HomeFailure) {
+            return CustomErrorWidget(
+                errorMessage: FlutterErrorDetails(exception: state.error));
           } else {
             return const Center(
               child: CircularProgressIndicator(),
